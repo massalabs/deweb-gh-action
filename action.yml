@@ -1,0 +1,62 @@
+name: 'Massa DeWeb Deployer'
+description: 'Deploy your websites Massa DeWeb'
+inputs:
+  config_file:
+    description: 'Deweb cli config file. default is deweb_cli_config.json'
+    required: false
+    default: deweb_cli_config.json
+  source_folder:
+    description: 'Path to website files directory. default is dist'
+    required: false
+    default: dist
+  rpc_url:
+    description: 'Massa Json RPC URL'
+    required: false
+    default: https://buildnet.massa.net/api/v2
+
+outputs:
+  deployed-website:
+    description: "Deployed or updated address"
+    value: ${{ steps.deploy-step.outputs.deployed-website }}
+
+branding:
+  icon: 'arrow-right-circle'
+  color: 'gray-dark'    
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check Runner OS
+      if: ${{ runner.os != 'Linux'}}
+      shell: bash
+      run: |
+        echo "::error title=⛔ error hint:: This action only supports Linux OS. Please use a Linux runner."
+        exit 1
+  
+    - name: Install npm (if missing)
+      shell: bash
+      run: |
+        if ! command -v npm &> /dev/null; then
+          echo "npm not found. Downloading..."
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+        fi
+        npm -v  # Confirm installation
+
+    - name: Install CLI
+      run: npm install -g @massalabs/deweb-cli
+      shell: bash
+
+    - name: Execute deployment
+      id: deploy-step
+      run: |
+        NODE_URL=""
+        if [[ -n "${{ inputs.rpc_url }}" ]]; then
+          NODE_URL="--node_url ${{ inputs.rpc_url }}"
+        fi
+        npx @massalabs/deweb-cli upload -y ${NODE_URL} ${{ inputs.source_folder }} | tee deployment_output.log
+        DEPLOYED_ADDRESS=$(grep 'Website deployed at' deployment_output.log | awk '{print $NF}')
+        echo "deployed-website=$(echo $DEPLOYED_ADDRESS)" >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        SECRET_KEY: ${{ env.SECRET_KEY }}
