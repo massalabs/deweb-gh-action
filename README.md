@@ -16,6 +16,19 @@ This GitHub Action allows you to deploy static websites to decentralized storage
 | `source_folder`| Path to the directory containing website files.  | No      | `dist`                   |
 | `rpc_url`      | Massa JSON RPC URL.                              | No       |  `https://buildnet.massa.net/api/v2`  |
 
+## Environment Variables
+
+The following environment variable must be provided for the action to work:
+
+| Name         | Description                                                                 |
+|--------------|-----------------------------------------------------------------------------|
+| `SECRET_KEY` | The private key used to deploy to Massa's DeWeb.  |
+
+In the case of a first deployment, the wallet will be the owner of the deployed website.
+In case of an update, the corresponding account should be the owner of the website to update.
+
+Make sure to store the `SECRET_KEY` securely as a GitHub secret and reference it in your workflow using `${{ secrets.SECRET_KEY }}`.
+
 ## Outputs
 
 | Name              | Description                                   |
@@ -42,15 +55,16 @@ jobs:
 
       - name: Deploy to Massa DeWeb
         id: deploy
-        uses: ./  # Use the composite action in the current repository
+        uses: massalabs/deweb-gh-action@v0.0.1
         with:
           config_file: deweb_cli_config_buildnet.json
           source_folder: dist
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
-      - name: Get deployed address
-        run: echo "Deployed address: ${{ steps.deploy.outputs.deployed-website }}"
+      - name: Get deployed website address
+        run: |
+          echo "Deployed website address: ${{ steps.deploy.outputs.deployed-website }}"
           
 ```
 

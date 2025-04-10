@@ -20,8 +20,8 @@ outputs:
     value: ${{ steps.deploy-step.outputs.deployed-website }}
 
 branding:
-  icon: 'arrow-right-circle'
-  color: 'gray-dark'    
+  icon: 'at-sign'
+  color: 'green'
 
 runs:
   using: "composite"
