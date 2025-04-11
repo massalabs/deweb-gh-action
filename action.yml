@@ -51,12 +51,15 @@ runs:
       id: deploy-step
       run: |
         NODE_URL=""
-        if [[ -n "${{ inputs.rpc_url }}" ]]; then
-          NODE_URL="--node_url ${{ inputs.rpc_url }}"
+        if [[ -n "$RPC_URL" ]]; then
+          NODE_URL="--node_url $RPC_URL"
         fi
-        npx @massalabs/deweb-cli upload -y ${NODE_URL} ${{ inputs.source_folder }} | tee deployment_output.log
+        npx @massalabs/deweb-cli upload -c $CONFIG_FILE -y ${NODE_URL} $SOURCE_FOLDER | tee deployment_output.log
         DEPLOYED_ADDRESS=$(grep 'Website deployed at' deployment_output.log | awk '{print $NF}')
         echo "deployed-website=$(echo $DEPLOYED_ADDRESS)" >> $GITHUB_OUTPUT
       shell: bash
       env:
         SECRET_KEY: ${{ env.SECRET_KEY }}
+        RPC_URL: ${{ inputs.rpc_url }}
+        CONFIG_FILE: ${{ inputs.config_file }}
+        SOURCE_FOLDER: ${{ inputs.source_folder }}
