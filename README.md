@@ -22,12 +22,12 @@ The following environment variable must be provided for the action to work:
 
 | Name         | Description                                                                 |
 |--------------|-----------------------------------------------------------------------------|
-| `SECRET_KEY` | The private key used to deploy to Massa's DeWeb.  |
+| `MASSA_DEWEB_SECRET_KEY` | The private key used to deploy to Massa's DeWeb.  |
 
 In the case of a first deployment, the wallet will be the owner of the deployed website.
 In case of an update, the corresponding account should be the owner of the website to update.
 
-Make sure to store the `SECRET_KEY` securely as a GitHub secret and reference it in your workflow using `${{ secrets.SECRET_KEY }}`.
+Make sure to store the `MASSA_DEWEB_SECRET_KEY` securely as a GitHub secret and reference it in your workflow. For instance `${{ secrets.MASSA_DEWEB_SECRET_KEY }}`.
 
 ## Outputs
 
@@ -60,7 +60,7 @@ jobs:
           config_file: deweb_cli_config_buildnet.json
           source_folder: dist
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          MASSA_DEWEB_SECRET_KEY: ${{ secrets.MASSA_DEWEB_SECRET_KEY }}
 
       - name: Get deployed website address
         run: |
@@ -68,20 +68,15 @@ jobs:
           
 ```
 
-## Prerequisites
-
-- A valid `SECRET_KEY` stored as a GitHub secret.
-- (Optional) A custom `rpc_url` stored as a GitHub secret if not set in config file.
-
 ## Configuration File
 
-The minimum configuration file (`deweb_cli_config.json`) to deploy a website should look like this:
+Example of a configuration file (`deweb_cli_config.json`) to deploy a website:
 
 ```json
 {
   "node_url": "https://buildnet.massa.net/api/v2",
-  "chunk_size": 64000,
   "metadatas": {
+    "TITLE": "The website name - buildnet",
     "DESCRIPTION": "Your website description"
   }
 }
@@ -95,8 +90,8 @@ Files and metadata will automatically added/updated/deleted
 {
   "address": "DEPLOYED_WEBSITE_ADDRESS",
   "node_url": "https://buildnet.massa.net/api/v2",
-  "chunk_size": 64000,
   "metadatas": {
+    "TITLE": "The website name - buildnet",
     "DESCRIPTION": "Your website description"
   }
 }
@@ -109,4 +104,3 @@ Read the full documentation of DeWeb cli configuration [here](https://docs.massa
 ## Notes
 
 - This action only supports Linux runners.
-- Ensure that the required dependencies (e.g., `npm`) are installed or will be installed by the action.

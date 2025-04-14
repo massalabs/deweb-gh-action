@@ -44,7 +44,7 @@ runs:
         npm -v  # Confirm installation
 
     - name: Install CLI
-      run: npm install -g @massalabs/deweb-cli
+      run: npm install -g @massalabs/deweb-cli@0.4.1-dev.20250414084531
       shell: bash
 
     - name: Execute deployment
@@ -59,7 +59,7 @@ runs:
         echo "deployed-website=$(echo $DEPLOYED_ADDRESS)" >> $GITHUB_OUTPUT
       shell: bash
       env:
-        SECRET_KEY: ${{ env.SECRET_KEY }}
+        SECRET_KEY: ${{ env.MASSA_DEWEB_SECRET_KEY }}
         RPC_URL: ${{ inputs.rpc_url }}
         CONFIG_FILE: ${{ inputs.config_file }}
         SOURCE_FOLDER: ${{ inputs.source_folder }}
