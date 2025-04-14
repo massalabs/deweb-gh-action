@@ -43,7 +43,7 @@ runs:
         npm -v  # Confirm installation
 
     - name: Install CLI
-      run: npm install -g @massalabs/deweb-cli@0.4.1-dev.20250414135216
+      run: npm install -g @massalabs/deweb-cli@0.4.1-dev.20250414144108
       shell: bash
 
     - name: Execute deployment
