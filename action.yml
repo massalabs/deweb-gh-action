@@ -12,7 +12,6 @@ inputs:
   rpc_url:
     description: 'Massa Json RPC URL'
     required: false
-    default: https://buildnet.massa.net/api/v2
 
 outputs:
   deployed-website:
