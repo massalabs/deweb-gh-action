@@ -1,5 +1,9 @@
 # Massa DeWeb GitHub Action
 
+> By using this tool, you agree with following terms of use:
+> - [Community Charter](./COMMUNITY_CHARTER.md)
+> - [deweb terms of use](./TERMS_OF_USE_DEWEB.md)
+
 This GitHub Action allows you to deploy static websites to decentralized storage using the Massa DeWeb CLI. It simplifies the deployment process by integrating directly into your GitHub workflows.
 
 ## Features
@@ -104,3 +108,7 @@ Read the full documentation of DeWeb cli configuration [here](https://docs.massa
 ## Notes
 
 - This action only supports Linux runners.
+
+## License
+License can be found [here](./LICENSE.md)
+
