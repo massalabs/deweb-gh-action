@@ -43,7 +43,7 @@ runs:
         npm -v  # Confirm installation
 
     - name: Install CLI
-      run: npm install -g @massalabs/deweb-cli@0.4.1-dev.20250414144108
+      run: npm install -g @massalabs/deweb-cli@0.5.0
       shell: bash
 
     - name: Execute deployment
@@ -53,7 +53,7 @@ runs:
         if [[ -n "$RPC_URL" ]]; then
           NODE_URL="--node_url $RPC_URL"
         fi
-        npx @massalabs/deweb-cli upload -c $CONFIG_FILE -y ${NODE_URL} $SOURCE_FOLDER | tee deployment_output.log
+        npx @massalabs/deweb-cli -a upload -c $CONFIG_FILE -y ${NODE_URL} $SOURCE_FOLDER | tee deployment_output.log
         DEPLOYED_ADDRESS=$(grep 'Website deployed at' deployment_output.log | awk '{print $NF}')
         echo "deployed-website=$(echo $DEPLOYED_ADDRESS)" >> $GITHUB_OUTPUT
       shell: bash
