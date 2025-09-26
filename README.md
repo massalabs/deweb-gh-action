@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy to Massa DeWeb
         id: deploy
-        uses: massalabs/deweb-gh-action@v0.1
+        uses: massalabs/deweb-gh-action@v0.1.0
         with:
           config_file: deweb_cli_config_buildnet.json
           source_folder: dist
