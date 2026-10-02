@@ -32,28 +32,35 @@ runs:
         echo "::error title=⛔ error hint:: This action only supports Linux OS. Please use a Linux runner."
         exit 1
   
-    - name: Install npm (if missing)
+    - name: Check npm
+      id: check-npm
       shell: bash
       run: |
-        if ! command -v npm &> /dev/null; then
-          echo "npm not found. Downloading..."
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-          \. "$HOME/.nvm/nvm.sh"
+        if command -v npm &> /dev/null; then
+          echo "present=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "present=false" >> "$GITHUB_OUTPUT"
         fi
-        npm -v  # Confirm installation
+
+    # Only when the runner has no Node.js, so that the Node.js version set up by the workflow is kept.
+    - name: Set up Node.js (if npm is missing)
+      if: ${{ steps.check-npm.outputs.present != 'true' }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
 
     - name: Install CLI
-      run: npm install -g @massalabs/deweb-cli@0.6.2-dev.20250926072615
+      run: npm install -g @massalabs/deweb-cli@0.6.3
       shell: bash
 
     - name: Execute deployment
       id: deploy-step
       run: |
-        NODE_URL=""
+        NODE_URL=()
         if [[ -n "$RPC_URL" ]]; then
-          NODE_URL="--node_url $RPC_URL"
+          NODE_URL=(--node_url "$RPC_URL")
         fi
-        npx @massalabs/deweb-cli -a upload -c $CONFIG_FILE -y ${NODE_URL} $SOURCE_FOLDER | tee deployment_output.log
+        npx @massalabs/deweb-cli -a upload -c "$CONFIG_FILE" -y "${NODE_URL[@]}" "$SOURCE_FOLDER" | tee deployment_output.log
         DEPLOYED_ADDRESS=$(grep 'Website deployed at' deployment_output.log | awk '{print $NF}')
         echo "deployed-website=$(echo $DEPLOYED_ADDRESS)" >> $GITHUB_OUTPUT
       shell: bash
