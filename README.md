@@ -18,7 +18,7 @@ This GitHub Action allows you to deploy static websites to decentralized storage
 |----------------|--------------------------------------------------|----------|--------------------------|
 | `config_file`  | Path to the DeWeb CLI configuration file.        | No       | `deweb_cli_config.json`  |
 | `source_folder`| Path to the directory containing website files.  | No      | `dist`                   |
-| `rpc_url`      | Massa JSON RPC URL.                              | No       |  `https://buildnet.massa.net/api/v2`  |
+| `rpc_url`      | Massa JSON RPC URL. Overrides `node_url` from the configuration file. | No       | `node_url` from the configuration file, else `https://buildnet.massa.net/api/v2` |
 
 ## Environment Variables
 
@@ -55,11 +55,11 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy to Massa DeWeb
         id: deploy
-        uses: massalabs/deweb-gh-action@v0.1.0
+        uses: massalabs/deweb-gh-action@v0.1.1
         with:
           config_file: deweb_cli_config_buildnet.json
           source_folder: dist
@@ -108,6 +108,7 @@ Read the full documentation of DeWeb cli configuration [here](https://docs.massa
 ## Notes
 
 - This action only supports Linux runners.
+- It installs `@massalabs/deweb-cli` globally. If the runner has no Node.js, it sets up Node.js 20 first.
 
 ## License
 License can be found [here](./LICENSE.md)
