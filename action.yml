@@ -50,7 +50,7 @@ runs:
         node-version: 20
 
     - name: Install CLI
-      run: npm install -g @massalabs/deweb-cli@0.6.3
+      run: npm install -g @massalabs/deweb-cli@0.6.4
       shell: bash
 
     - name: Execute deployment
