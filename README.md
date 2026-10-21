@@ -50,6 +50,11 @@ on:
   push:
     branches:
       - main
+    # Skip pushes that don't change the website (CI, repo metadata).
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+  workflow_dispatch:
 
 # Never run two uploads in parallel: runs wait for the current upload,
 # and a newer push replaces any queued run so only the latest commit is deployed.
@@ -85,6 +90,8 @@ The `concurrency` block prevents several deployments from running at the same ti
 Only one deployment runs at a time: a new run waits for the current upload to finish, and only the most recent pending one is kept, so the website always ends up at the latest commit.
 The group name is fixed (not per branch) so that a manual run from another branch cannot upload to the same website in parallel. If a repository deploys several websites, use one group per website.
 `cancel-in-progress` is kept to `false` because interrupting an upload in the middle would leave the website partially updated.
+
+`paths-ignore` skips the deployment when a push only changes files that are not part of the website, such as the CI configuration. A push that also changes website files is still deployed. Adapt the list to your repository, and use `workflow_dispatch` to trigger a deployment manually.
 
 ## Configuration File
 
