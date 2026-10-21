@@ -48,6 +48,14 @@ name: Deploy to Massa DeWeb
 
 on:
   push:
+    branches:
+      - main
+
+# Deploy only the latest commit: a newer push replaces any queued run.
+# Never cancel a running upload, it would leave the website half updated.
+concurrency:
+  group: deweb-deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -71,6 +79,10 @@ jobs:
           echo "Deployed website address: ${{ steps.deploy.outputs.deployed-website }}"
           
 ```
+
+The `concurrency` block prevents several deployments from running at the same time when commits are pushed in a row (for instance when merging several pull requests).
+Only one deployment runs at a time, and only the most recent pending one is kept, so the website always ends up at the latest commit.
+`cancel-in-progress` is kept to `false` because interrupting an upload in the middle would leave the website partially updated.
 
 ## Configuration File
 
