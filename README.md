@@ -51,10 +51,11 @@ on:
     branches:
       - main
 
-# Deploy only the latest commit: a newer push replaces any queued run.
+# Never run two uploads in parallel: runs wait for the current upload,
+# and a newer push replaces any queued run so only the latest commit is deployed.
 # Never cancel a running upload, it would leave the website half updated.
 concurrency:
-  group: deweb-deploy-${{ github.ref }}
+  group: deweb-deploy
   cancel-in-progress: false
 
 jobs:
@@ -81,7 +82,8 @@ jobs:
 ```
 
 The `concurrency` block prevents several deployments from running at the same time when commits are pushed in a row (for instance when merging several pull requests).
-Only one deployment runs at a time, and only the most recent pending one is kept, so the website always ends up at the latest commit.
+Only one deployment runs at a time: a new run waits for the current upload to finish, and only the most recent pending one is kept, so the website always ends up at the latest commit.
+The group name is fixed (not per branch) so that a manual run from another branch cannot upload to the same website in parallel. If a repository deploys several websites, use one group per website.
 `cancel-in-progress` is kept to `false` because interrupting an upload in the middle would leave the website partially updated.
 
 ## Configuration File
